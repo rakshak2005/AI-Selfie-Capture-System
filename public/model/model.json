@@ -1,0 +1,36 @@
+{
+  "format": "layers-model",
+  "generatedBy": "keras v2.12.0",
+  "convertedBy": "TensorFlow.js Converter v4.10.0",
+  "modelTopology": {
+    "class_name": "Sequential",
+    "config": {
+      "layers": [
+        {
+          "class_name": "Conv2D",
+          "config": {
+            "filters": 8,
+            "kernel_size": [3, 3],
+            "activation": "relu"
+          }
+        },
+        {
+          "class_name": "MaxPooling2D",
+          "config": {
+            "pool_size": [2, 2]
+          }
+        }
+        
+      ]
+    }
+  },
+  "weightsManifest": [
+    {
+      "paths": ["group1-shard1of1.bin"],
+      "weights": [
+        {"name": "conv2d/kernel", "shape": [3, 3, 1, 8], "dtype": "float32"},
+        {"name": "conv2d/bias", "shape": [8], "dtype": "float32"}
+      ]
+    }
+  ]
+}
