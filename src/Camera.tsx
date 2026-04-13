@@ -15,11 +15,11 @@ const CameraComponent: React.FC = () => {
 
   const [smileProb, setSmileProb] = useState<number>(0);
 
-  // ✅ 1. WE BUILD THE CNN ARCHITECTURE DIRECTLY IN REACT
+  
   const createModel = () => {
     const model = tf.sequential();
 
-    // The 'inputShape' here prevents the crash you were seeing earlier
+    
     model.add(tf.layers.conv2d({
       inputShape: [48, 48, 1],
       filters: 8,
@@ -40,7 +40,7 @@ const CameraComponent: React.FC = () => {
     model.add(tf.layers.dense({ units: 32, activation: "relu" }));
     model.add(tf.layers.dense({ units: 1, activation: "sigmoid" }));
 
-    // Compile the model so it is ready to make predictions
+    
     model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
     return model;
@@ -60,7 +60,7 @@ const CameraComponent: React.FC = () => {
     let smoothedSmile = 0;
       await tf.setBackend("webgl");
 
-      // ✅ 2. INITIALIZE THE MODEL
+      //  INITIALIZEd
       model = createModel();
       console.log("React CNN Model created successfully!");
 
@@ -107,7 +107,7 @@ const CameraComponent: React.FC = () => {
               const w = box.width * canvas.width;
               const h = box.height * canvas.height;
 
-              // Draw green bounding box
+              
               ctx.strokeStyle = "lime";
               ctx.lineWidth = 3;
               ctx.strokeRect(x, y, w, h);
@@ -127,7 +127,7 @@ const CameraComponent: React.FC = () => {
                 0, 0, size, size
               );
 
-              // ✅ 3. PREPARE TENSOR FOR THE CNN
+              
               const rawPixels = tf.browser.fromPixels(cropCanvas);
               const tensor = rawPixels
                 .resizeNearestNeighbor([48, 48])
@@ -137,24 +137,23 @@ const CameraComponent: React.FC = () => {
                 .expandDims(0)
                 .expandDims(-1);
 
-              // ✅ 4. GET CNN PREDICTION
+              
               const prediction = model.predict(tensor) as tf.Tensor;
               const cnnOutputData = await prediction.data();
               const cnnOutput = cnnOutputData[0];
 
-              // ✅ 5. APPLY STRUCTURAL HEURISTIC (For the demo)
+              // 5 for my reference 
               const floatPixels = rawPixels.toFloat();
               const mouthRegion = floatPixels.slice([30, 10, 0], [18, 28, 3]); 
               const moments = tf.moments(mouthRegion);
               const varianceData = await moments.variance.data();
               const mouthVariance = varianceData[0];
 
-              // 💡 1. STRICTER BASELINE: We raised this to 800 to completely 
-              // ignore the shadows from your beard and room.
+            
               const baselineNoise = 800; 
               const adjustedVariance = Math.max(0, mouthVariance - baselineNoise);
 
-              // 💡 2. WIDER SCALE: Makes it harder to reach 100% too easily.
+            
               const rawSmileScore = Math.min(1, adjustedVariance / 1000);
               
               // 💡 3. EXPONENTIAL SMOOTHING: Fixes the flickering!
@@ -164,7 +163,7 @@ const CameraComponent: React.FC = () => {
 
               setSmileProb(smoothedSmile);
 
-              // ✅ 6. CLEANUP ALL TENSORS TO PREVENT CRASHES
+             
               tf.dispose([
                 rawPixels, 
                 tensor, 
