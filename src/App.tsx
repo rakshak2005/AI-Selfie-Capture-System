@@ -1,17 +1,11 @@
-
 import './App.css'
 import Camera from "./Camera";
 
 function App() {
-  
-
   return (
-    <>
-      <div>
-      <h1>AI Selfie App</h1>
+    <div className="app">
       <Camera />
     </div>
-    </>
   )
 }
 
